@@ -1,0 +1,15 @@
+# Build artifacts
+.pio/
+build/
+*.bin
+*.elf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
