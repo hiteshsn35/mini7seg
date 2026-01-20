@@ -32,24 +32,23 @@ enum BackgroundMode {
   BG_BLEND        // Blend lit segments with existing colors
 };
 
-// Simple RGB struct for color-agnostic operation
-// Compatible with CRGB, Adafruit NeoPixel, or raw arrays
-struct RGB {
+// Simple color struct (named to avoid collision with FastLED's S7Color)
+struct S7Color {
   uint8_t r, g, b;
 
-  RGB() : r(0), g(0), b(0) {}
-  RGB(uint8_t red, uint8_t green, uint8_t blue) : r(red), g(green), b(blue) {}
+  S7Color() : r(0), g(0), b(0) {}
+  S7Color(uint8_t red, uint8_t green, uint8_t blue) : r(red), g(green), b(blue) {}
 
   // Common colors
-  static RGB Black()   { return RGB(0, 0, 0); }
-  static RGB White()   { return RGB(255, 255, 255); }
-  static RGB Red()     { return RGB(255, 0, 0); }
-  static RGB Green()   { return RGB(0, 255, 0); }
-  static RGB Blue()    { return RGB(0, 0, 255); }
-  static RGB Yellow()  { return RGB(255, 255, 0); }
-  static RGB Cyan()    { return RGB(0, 255, 255); }
-  static RGB Magenta() { return RGB(255, 0, 255); }
-  static RGB Orange()  { return RGB(255, 128, 0); }
+  static S7Color Black()   { return S7Color(0, 0, 0); }
+  static S7Color White()   { return S7Color(255, 255, 255); }
+  static S7Color Red()     { return S7Color(255, 0, 0); }
+  static S7Color Green()   { return S7Color(0, 255, 0); }
+  static S7Color Blue()    { return S7Color(0, 0, 255); }
+  static S7Color Yellow()  { return S7Color(255, 255, 0); }
+  static S7Color Cyan()    { return S7Color(0, 255, 255); }
+  static S7Color Magenta() { return S7Color(255, 0, 255); }
+  static S7Color Orange()  { return S7Color(255, 128, 0); }
 };
 
 // Segment patterns for characters
@@ -59,16 +58,17 @@ extern const uint8_t SEGMENT_PATTERNS[];
 class String7Segment {
 public:
   // Constructor for single digit
-  // ledArray: pointer to your LED array (CRGB*, RGB*, or compatible)
-  // offset: where our 8 LEDs start in the array
+  // ledArray: pointer to your LED array (CRGB*, S7Color*, or compatible)
+  // offset: where our LEDs start in the array
   template<typename T>
   String7Segment(T* ledArray, uint16_t offset)
     : _ledPtr((uint8_t*)ledArray)
     , _offset(offset)
     , _numDigits(1)
+    , _ledsPerSegment(1)
     , _pixelSize(sizeof(T))
-    , _foreground(RGB::Red())
-    , _background(RGB::Black())
+    , _foreground(S7Color::Red())
+    , _background(S7Color::Black())
     , _bgMode(BG_OVERWRITE)
   {}
 
@@ -78,17 +78,32 @@ public:
     : _ledPtr((uint8_t*)ledArray)
     , _offset(offset)
     , _numDigits(numDigits)
+    , _ledsPerSegment(1)
     , _pixelSize(sizeof(T))
-    , _foreground(RGB::Red())
-    , _background(RGB::Black())
+    , _foreground(S7Color::Red())
+    , _background(S7Color::Black())
+    , _bgMode(BG_OVERWRITE)
+  {}
+
+  // Constructor with custom LEDs per segment (for larger displays)
+  // Use 2 or 3 for displays with multiple LEDs per segment
+  template<typename T>
+  String7Segment(T* ledArray, uint16_t offset, uint8_t numDigits, uint8_t ledsPerSegment)
+    : _ledPtr((uint8_t*)ledArray)
+    , _offset(offset)
+    , _numDigits(numDigits)
+    , _ledsPerSegment(ledsPerSegment)
+    , _pixelSize(sizeof(T))
+    , _foreground(S7Color::Red())
+    , _background(S7Color::Black())
     , _bgMode(BG_OVERWRITE)
   {}
 
   // Color settings
-  void setForeground(RGB color) { _foreground = color; }
-  void setForeground(uint8_t r, uint8_t g, uint8_t b) { _foreground = RGB(r, g, b); }
-  void setBackground(RGB color) { _background = color; }
-  void setBackground(uint8_t r, uint8_t g, uint8_t b) { _background = RGB(r, g, b); }
+  void setForeground(S7Color color) { _foreground = color; }
+  void setForeground(uint8_t r, uint8_t g, uint8_t b) { _foreground = S7Color(r, g, b); }
+  void setBackground(S7Color color) { _background = color; }
+  void setBackground(uint8_t r, uint8_t g, uint8_t b) { _background = S7Color(r, g, b); }
   void setBackgroundMode(BackgroundMode mode) { _bgMode = mode; }
 
   // Display functions
@@ -103,21 +118,31 @@ public:
   void clearDigit(uint8_t position = 0);
   void setDecimalPoint(uint8_t position, bool on = true);
 
+  // Animations
+  void spinStep(uint8_t step, uint8_t position = 0);  // step 0-5 for outer ring
+  uint8_t getSpinSegment(uint8_t step);               // Get segment mask for spin step
+
   // Get segment pattern for a character
   static uint8_t getPattern(char c);
 
+  // Configuration
+  void setLedsPerSegment(uint8_t count) { _ledsPerSegment = count; }
+  uint8_t getLedsPerSegment() const { return _ledsPerSegment; }
+  uint8_t getLedsPerDigit() const { return 8 * _ledsPerSegment; }
+
 private:
-  uint8_t* _ledPtr;       // Pointer to LED array (as bytes)
-  uint16_t _offset;       // Starting index in LED array
-  uint8_t  _numDigits;    // Number of digits
-  uint8_t  _pixelSize;    // Size of each pixel struct (3 for RGB, 4 for RGBW)
-  RGB      _foreground;   // Lit segment color
-  RGB      _background;   // Unlit segment color
-  BackgroundMode _bgMode; // How to handle unlit segments
+  uint8_t* _ledPtr;         // Pointer to LED array (as bytes)
+  uint16_t _offset;         // Starting index in LED array
+  uint8_t  _numDigits;      // Number of digits
+  uint8_t  _ledsPerSegment; // LEDs per segment (1, 2, or 3 typical)
+  uint8_t  _pixelSize;      // Size of each pixel struct (3 for RGB, 4 for RGBW)
+  S7Color  _foreground;     // Lit segment color
+  S7Color  _background;     // Unlit segment color
+  BackgroundMode _bgMode;   // How to handle unlit segments
 
   // Write color to a specific LED
-  void setPixel(uint16_t index, RGB color);
-  RGB  getPixel(uint16_t index);
+  void setPixel(uint16_t index, S7Color color);
+  S7Color  getPixel(uint16_t index);
 };
 
 #endif // STRING_7_SEGMENT_H

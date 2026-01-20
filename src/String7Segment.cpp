@@ -73,18 +73,18 @@ uint8_t String7Segment::getPattern(char c) {
 }
 
 // Write color to a specific LED in the array
-void String7Segment::setPixel(uint16_t index, RGB color) {
+void String7Segment::setPixel(uint16_t index, S7Color color) {
   uint8_t* pixel = _ledPtr + (index * _pixelSize);
-  // Assuming RGB order (most common for CRGB)
+  // Assuming S7Color order (most common for CS7Color)
   pixel[0] = color.r;
   pixel[1] = color.g;
   pixel[2] = color.b;
 }
 
 // Read color from a specific LED in the array
-RGB String7Segment::getPixel(uint16_t index) {
+S7Color String7Segment::getPixel(uint16_t index) {
   uint8_t* pixel = _ledPtr + (index * _pixelSize);
-  return RGB(pixel[0], pixel[1], pixel[2]);
+  return S7Color(pixel[0], pixel[1], pixel[2]);
 }
 
 // Display a single digit (0-9)
@@ -106,29 +106,33 @@ void String7Segment::showChar(char c, uint8_t position, bool showDP) {
 void String7Segment::showSegments(uint8_t segmentMask, uint8_t position) {
   if (position >= _numDigits) return;
 
-  // Calculate LED index for this digit
-  uint16_t baseIndex = _offset + (position * 8);
+  // Calculate LED index for this digit (8 segments * LEDs per segment)
+  uint16_t baseIndex = _offset + (position * 8 * _ledsPerSegment);
 
-  // Process each segment (8 LEDs per digit)
+  // Process each segment
   for (uint8_t seg = 0; seg < 8; seg++) {
-    uint16_t ledIndex = baseIndex + seg;
     bool segmentOn = (segmentMask >> seg) & 0x01;
 
-    if (segmentOn) {
-      // Lit segment - always set to foreground
-      setPixel(ledIndex, _foreground);
-    } else {
-      // Unlit segment - depends on background mode
-      switch (_bgMode) {
-        case BG_OVERWRITE:
-          setPixel(ledIndex, _background);
-          break;
-        case BG_PRESERVE:
-          // Don't touch it
-          break;
-        case BG_BLEND:
-          // For now, just preserve (blend logic can be added later)
-          break;
+    // Each segment may have multiple LEDs
+    for (uint8_t led = 0; led < _ledsPerSegment; led++) {
+      uint16_t ledIndex = baseIndex + (seg * _ledsPerSegment) + led;
+
+      if (segmentOn) {
+        // Lit segment - always set to foreground
+        setPixel(ledIndex, _foreground);
+      } else {
+        // Unlit segment - depends on background mode
+        switch (_bgMode) {
+          case BG_OVERWRITE:
+            setPixel(ledIndex, _background);
+            break;
+          case BG_PRESERVE:
+            // Don't touch it
+            break;
+          case BG_BLEND:
+            // For now, just preserve (blend logic can be added later)
+            break;
+        }
       }
     }
   }
@@ -202,12 +206,14 @@ void String7Segment::clear() {
 void String7Segment::clearDigit(uint8_t position) {
   if (position >= _numDigits) return;
 
-  uint16_t baseIndex = _offset + (position * 8);
+  uint16_t baseIndex = _offset + (position * 8 * _ledsPerSegment);
   for (uint8_t seg = 0; seg < 8; seg++) {
-    if (_bgMode == BG_PRESERVE) {
-      // Don't touch
-    } else {
-      setPixel(baseIndex + seg, _background);
+    for (uint8_t led = 0; led < _ledsPerSegment; led++) {
+      if (_bgMode == BG_PRESERVE) {
+        // Don't touch
+      } else {
+        setPixel(baseIndex + (seg * _ledsPerSegment) + led, _background);
+      }
     }
   }
 }
@@ -216,10 +222,32 @@ void String7Segment::clearDigit(uint8_t position) {
 void String7Segment::setDecimalPoint(uint8_t position, bool on) {
   if (position >= _numDigits) return;
 
-  uint16_t dpIndex = _offset + (position * 8) + 7;  // DP is segment 7
-  if (on) {
-    setPixel(dpIndex, _foreground);
-  } else if (_bgMode != BG_PRESERVE) {
-    setPixel(dpIndex, _background);
+  // DP is segment 7 (index 7 * ledsPerSegment)
+  uint16_t dpBase = _offset + (position * 8 * _ledsPerSegment) + (7 * _ledsPerSegment);
+  for (uint8_t led = 0; led < _ledsPerSegment; led++) {
+    if (on) {
+      setPixel(dpBase + led, _foreground);
+    } else if (_bgMode != BG_PRESERVE) {
+      setPixel(dpBase + led, _background);
+    }
   }
+}
+
+// Spin animation - outer ring segments in clockwise order: A B C D E F
+// Step 0=A, 1=B, 2=C, 3=D, 4=E, 5=F
+static const uint8_t SPIN_SEGMENTS[] = {
+  SEG_A,  // step 0 - top
+  SEG_B,  // step 1 - upper right
+  SEG_C,  // step 2 - lower right
+  SEG_D,  // step 3 - bottom
+  SEG_E,  // step 4 - lower left
+  SEG_F   // step 5 - upper left
+};
+
+uint8_t String7Segment::getSpinSegment(uint8_t step) {
+  return SPIN_SEGMENTS[step % 6];
+}
+
+void String7Segment::spinStep(uint8_t step, uint8_t position) {
+  showSegments(SPIN_SEGMENTS[step % 6], position);
 }

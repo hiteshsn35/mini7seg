@@ -1,0 +1,37 @@
+# Syntax highlighting for String7Segment library
+# Classes (KEYWORD1)
+String7Segment	KEYWORD1
+S7Color	KEYWORD1
+BackgroundMode	KEYWORD1
+
+# Methods (KEYWORD2)
+showDigit	KEYWORD2
+showChar	KEYWORD2
+showSegments	KEYWORD2
+showNumber	KEYWORD2
+showHex	KEYWORD2
+clear	KEYWORD2
+clearDigit	KEYWORD2
+setDecimalPoint	KEYWORD2
+setForeground	KEYWORD2
+setBackground	KEYWORD2
+setBackgroundMode	KEYWORD2
+setLedsPerSegment	KEYWORD2
+getLedsPerSegment	KEYWORD2
+getLedsPerDigit	KEYWORD2
+getPattern	KEYWORD2
+spinStep	KEYWORD2
+getSpinSegment	KEYWORD2
+
+# Constants (LITERAL1)
+SEG_A	LITERAL1
+SEG_B	LITERAL1
+SEG_C	LITERAL1
+SEG_D	LITERAL1
+SEG_E	LITERAL1
+SEG_F	LITERAL1
+SEG_G	LITERAL1
+SEG_DP	LITERAL1
+BG_OVERWRITE	LITERAL1
+BG_PRESERVE	LITERAL1
+BG_BLEND	LITERAL1

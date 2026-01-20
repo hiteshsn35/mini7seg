@@ -6,14 +6,14 @@
  *
  * Hardware:
  * - ESP32 (or ESP32-S3)
- * - 8 WS2812 2020 LEDs wired as 7-segment (A,B,C,D,E,F,G,DP)
- * - Data pin connected to GPIO 5
+ * - 8 WS2812-2020 (SMD2020 package) LEDs wired as 7-segment (A,B,C,D,E,F,G,DP)
+ * - Data pin connected to GPIO 13
  */
 
 #include <FastLED.h>
 #include "String7Segment.h"
 
-#define DATA_PIN    5
+#define DATA_PIN    13
 #define NUM_LEDS    8     // Single digit = 8 LEDs
 #define BRIGHTNESS  50
 
@@ -32,8 +32,8 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
 
   // Configure display colors
-  display.setForeground(RGB::Red());
-  display.setBackground(RGB::Black());
+  display.setForeground(S7Color::Red());
+  display.setBackground(S7Color::Black());
   display.setBackgroundMode(BG_OVERWRITE);
 }
 
@@ -52,13 +52,26 @@ void loop() {
     delay(500);
   }
 
-  // Show some letters
-  const char* hello = "HELLO";
-  for (int i = 0; i < 5; i++) {
-    display.showChar(hello[i]);
+  // Show extended letters: H J L n o P r U Y
+  const char* letters = "HJLnoPrUY";
+  for (int i = 0; letters[i]; i++) {
+    display.showChar(letters[i]);
     FastLED.show();
-    delay(400);
+    delay(500);
   }
+
+  // Show special characters: hyphen, underscore, space
+  display.showChar('-');
+  FastLED.show();
+  delay(700);
+
+  display.showChar('_');
+  FastLED.show();
+  delay(700);
+
+  display.showChar(' ');  // blank
+  FastLED.show();
+  delay(700);
 
   // Blink decimal point
   display.showDigit(8);  // All segments on
