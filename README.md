@@ -234,6 +234,8 @@ A0 A1 A2...A49 B0 B1 B2...B49 C0...C49 D0...D49 E0...E49 F0...F49 G0...G49 DP0..
 
 This library was developed for custom PCBs using WS2812B-2020 LEDs arranged as 7-segment displays.
 
+**PCB Design:** [OSHWLab Project](https://oshwlab.com/mcyork/7-seg-string) - Open source schematic and Gerber files
+
 ![3D Render](images/pcb-3d.png)
 
 | PCB Layout | 12-Digit Panel |
